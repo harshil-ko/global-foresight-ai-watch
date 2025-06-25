@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -324,7 +323,7 @@ export const ConflictDialog: React.FC<ConflictDialogProps> = ({ isOpen, onClose,
               </div>
               <div className="space-y-2">
                 {conflict.keyDevelopments.map((development, index) => (
-                  <div key={index} className="text-sm border-l-2 border-green-400/30 pl-3 py-1">
+                  <div key={index} className="text-sm border-l-2 border-green-400/30 pl-3 py-1 text-white">
                     • {development}
                   </div>
                 ))}
