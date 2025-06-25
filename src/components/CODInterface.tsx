@@ -14,7 +14,13 @@ const CODInterface: React.FC = () => {
   const [activeThreats, setActiveThreats] = useState(7);
   const [systemStatus, setSystemStatus] = useState<'operational' | 'compromised' | 'critical'>('operational');
 
-  const mockThreats = [
+  const mockThreats: Array<{
+    id: string;
+    x: number;
+    y: number;
+    type: 'aircraft' | 'naval' | 'ground' | 'cyber';
+    threat_level: string;
+  }> = [
     { id: '1', x: 30, y: -20, type: 'aircraft', threat_level: 'high' },
     { id: '2', x: -40, y: 50, type: 'naval', threat_level: 'medium' },
     { id: '3', x: 60, y: 30, type: 'cyber', threat_level: 'critical' },
