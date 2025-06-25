@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { TacticalHUD } from './TacticalHUD';
 import { MilitaryButton } from './MilitaryButton';
 import { ThreatIndicator } from './ThreatIndicator';
 import { RadarDisplay } from './RadarDisplay';
+import { GlobalMap } from './GlobalMap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -82,6 +82,19 @@ const CODInterface: React.FC = () => {
             </TabsList>
 
             <TabsContent value="tactical" className="space-y-6">
+              {/* Global Map - Full Width */}
+              <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="text-green-400 font-mono flex items-center gap-2">
+                    <Globe className="w-5 h-5" />
+                    GLOBAL CONFLICT MAP
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <GlobalMap />
+                </CardContent>
+              </Card>
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Radar Display */}
                 <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
