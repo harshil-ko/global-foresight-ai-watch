@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { TacticalHUD } from './TacticalHUD';
 import { MilitaryButton } from './MilitaryButton';
@@ -7,7 +8,7 @@ import { GlobalMap } from './GlobalMap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Satellite, Radio, Users, Globe } from 'lucide-react';
+import { MapPin, Satellite, Radio, Users, Globe, TrendingUp } from 'lucide-react';
 
 const CODInterface: React.FC = () => {
   const [threatLevel, setThreatLevel] = useState(3);
@@ -33,6 +34,24 @@ const CODInterface: React.FC = () => {
     { level: 'medium' as const, location: 'MIDDLE EAST', type: 'INSURGENT ACTIVITY', confidence: 73 },
     { level: 'low' as const, location: 'ARCTIC CIRCLE', type: 'SURVEILLANCE', confidence: 56 },
   ];
+
+  const recentDevelopments = [
+    { time: '14:30', event: 'Eastern Europe: Cyber attack on infrastructure networks detected', severity: 'critical' },
+    { time: '12:15', event: 'South China Sea: Increased naval patrols reported', severity: 'high' },
+    { time: '10:45', event: 'Middle East: Diplomatic talks scheduled for emergency session', severity: 'medium' },
+    { time: '08:20', event: 'Africa: Humanitarian aid corridors established', severity: 'low' },
+    { time: '06:00', event: 'Arctic: Surveillance activities increased in disputed zones', severity: 'medium' },
+  ];
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'critical': return 'text-red-400';
+      case 'high': return 'text-orange-400';
+      case 'medium': return 'text-yellow-400';
+      case 'low': return 'text-green-400';
+      default: return 'text-gray-400';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono relative overflow-hidden">
@@ -95,7 +114,7 @@ const CODInterface: React.FC = () => {
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Radar Display */}
                 <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
                   <CardHeader>
@@ -109,7 +128,7 @@ const CODInterface: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                {/* Global Status */}
+                {/* Global Status with Recent Developments */}
                 <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="text-green-400 font-mono flex items-center gap-2">
@@ -136,27 +155,23 @@ const CODInterface: React.FC = () => {
                         {systemStatus.toUpperCase()}
                       </Badge>
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* Command Center */}
-                <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-green-400 font-mono flex items-center gap-2">
-                      <Users className="w-5 h-5" />
-                      COMMAND CENTER
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <MilitaryButton variant="primary" className="w-full">
-                      ENGAGE PROTOCOLS
-                    </MilitaryButton>
-                    <MilitaryButton variant="secondary" className="w-full">
-                      SATELLITE UPLINK
-                    </MilitaryButton>
-                    <MilitaryButton variant="danger" className="w-full">
-                      EMERGENCY ALERT
-                    </MilitaryButton>
+                    
+                    <div className="border-t border-green-400/30 pt-4">
+                      <div className="text-green-400/70 mb-2 flex items-center gap-1 text-sm">
+                        <TrendingUp className="w-3 h-3" />
+                        RECENT DEVELOPMENTS:
+                      </div>
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {recentDevelopments.map((dev, index) => (
+                          <div key={index} className="text-xs border-l-2 border-green-400/30 pl-2 py-1">
+                            <div className="flex justify-between items-start">
+                              <span className={getSeverityColor(dev.severity)}>{dev.time}</span>
+                            </div>
+                            <div className="text-green-400/80 text-xs">{dev.event}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>

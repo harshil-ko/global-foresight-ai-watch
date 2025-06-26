@@ -162,15 +162,28 @@ export const GlobalMap: React.FC = () => {
               <circle
                 cx={conflict.x * 10}
                 cy={conflict.y * 5}
-                r="15"
+                r="20"
                 fill="none"
                 stroke={getConflictColor(conflict.severity)}
                 strokeWidth="2"
-                strokeOpacity="0.3"
+                strokeOpacity="0.4"
                 className="animate-ping"
               />
               
-              {/* Main conflict indicator */}
+              {/* Secondary pulsing ring */}
+              <circle
+                cx={conflict.x * 10}
+                cy={conflict.y * 5}
+                r="15"
+                fill="none"
+                stroke={getConflictColor(conflict.severity)}
+                strokeWidth="1.5"
+                strokeOpacity="0.6"
+                className="animate-pulse"
+                style={{ animationDelay: '0.5s' }}
+              />
+              
+              {/* Main conflict indicator with enhanced blinking */}
               <circle
                 cx={conflict.x * 10}
                 cy={conflict.y * 5}
@@ -180,16 +193,23 @@ export const GlobalMap: React.FC = () => {
                 strokeWidth="2"
                 className="animate-pulse cursor-pointer hover:r-10 transition-all duration-200"
                 onClick={() => handleConflictClick(conflict)}
-                style={{ filter: `drop-shadow(0 0 12px ${getConflictColor(conflict.severity)})` }}
+                style={{ 
+                  filter: `drop-shadow(0 0 12px ${getConflictColor(conflict.severity)})`,
+                  animation: `pulse 1.5s ease-in-out infinite alternate`
+                }}
               />
               
-              {/* Inner core */}
+              {/* Inner core with blinking */}
               <circle
                 cx={conflict.x * 10}
                 cy={conflict.y * 5}
                 r="3"
                 fill="white"
                 className="animate-pulse"
+                style={{ 
+                  animation: `pulse 1s ease-in-out infinite`,
+                  animationDelay: '0.25s'
+                }}
               />
             </g>
           ))}
