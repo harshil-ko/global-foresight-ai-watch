@@ -130,7 +130,7 @@ export const GlobalMap: React.FC = () => {
   return (
     <>
       <div 
-        className="relative w-full aspect-[2/1] bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden cursor-crosshair"
+        className="relative w-full h-96 bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden cursor-crosshair"
         onMouseMove={handleMouseMove}
       >
         {/* Base tactical world map image */}
@@ -220,6 +220,37 @@ export const GlobalMap: React.FC = () => {
           LAT: {formatCoordinate(coordinates.lat, true)} LON: {formatCoordinate(coordinates.lon, false)}
         </div>
         
+        {/* Mini Radar Display */}
+        <div className="absolute bottom-3 left-3 w-24 h-24">
+          <div className="relative w-full h-full bg-black/80 border border-green-400/50 rounded-full">
+            {/* Radar Grid */}
+            <div className="absolute inset-0 rounded-full overflow-hidden">
+              {/* Concentric circles */}
+              <div className="absolute inset-2 border border-green-400/30 rounded-full"></div>
+              <div className="absolute inset-4 border border-green-400/20 rounded-full"></div>
+              
+              {/* Cross lines */}
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-green-400/30 transform -translate-y-px"></div>
+              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-green-400/30 transform -translate-x-px"></div>
+              
+              {/* Rotating sweep line */}
+              <div className="absolute top-1/2 left-1/2 w-px h-1/2 bg-gradient-to-t from-green-400 to-transparent transform-gpu origin-bottom animate-spin">
+                <div className="absolute top-0 left-1/2 w-1 h-1 bg-green-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+              
+              {/* Threat blips */}
+              <div className="absolute top-1/3 left-2/3 w-1 h-1 bg-red-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-2/3 left-1/3 w-1 h-1 bg-yellow-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-orange-400 rounded-full animate-pulse"></div>
+            </div>
+            
+            {/* Radar Label */}
+            <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-green-400 font-mono">
+              RADAR
+            </div>
+          </div>
+        </div>
+
         {/* Tactical Legend */}
         <div className="absolute bottom-3 right-3 text-xs text-amber-400 font-mono bg-black/80 px-3 py-2 border border-amber-500/50 space-y-1">
           <div className="text-amber-300 font-bold mb-1">THREAT LEVELS</div>

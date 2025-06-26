@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { TacticalHUD } from './TacticalHUD';
 import { MilitaryButton } from './MilitaryButton';
 import { ThreatIndicator } from './ThreatIndicator';
-import { RadarDisplay } from './RadarDisplay';
 import { GlobalMap } from './GlobalMap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Satellite, Radio, Users, Globe, TrendingUp } from 'lucide-react';
+import { MapPin, Satellite, Users, Globe, TrendingUp } from 'lucide-react';
 
 const CODInterface: React.FC = () => {
   const [threatLevel, setThreatLevel] = useState(3);
@@ -45,19 +44,6 @@ const CODInterface: React.FC = () => {
   const getVotePercentage = (votes: number, total: number) => {
     return Math.round((votes / total) * 100);
   };
-
-  const mockThreats: Array<{
-    id: string;
-    x: number;
-    y: number;
-    type: 'aircraft' | 'naval' | 'ground' | 'cyber';
-    threat_level: string;
-  }> = [
-    { id: '1', x: 30, y: -20, type: 'aircraft', threat_level: 'high' },
-    { id: '2', x: -40, y: 50, type: 'naval', threat_level: 'medium' },
-    { id: '3', x: 60, y: 30, type: 'cyber', threat_level: 'critical' },
-    { id: '4', x: -20, y: -60, type: 'ground', threat_level: 'low' },
-  ];
 
   const threatCards = [
     { level: 'critical' as const, location: 'EASTERN EUROPE', type: 'CYBER ATTACK', confidence: 94 },
@@ -145,67 +131,33 @@ const CODInterface: React.FC = () => {
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Radar Display */}
-                <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-green-400 font-mono flex items-center gap-2">
-                      <Radio className="w-5 h-5" />
-                      RADAR SWEEP
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex justify-center">
-                    <RadarDisplay threats={mockThreats} size={250} />
-                  </CardContent>
-                </Card>
-
-                {/* Global Status with Recent Developments */}
-                <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-green-400 font-mono flex items-center gap-2">
-                      <Globe className="w-5 h-5" />
-                      GLOBAL STATUS
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-white">DEFCON LEVEL</span>
-                      <Badge variant="destructive" className="bg-red-900/50 text-red-400">
-                        {threatLevel}
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-white">ACTIVE THREATS</span>
-                      <Badge variant="secondary" className="bg-yellow-900/50 text-yellow-400">
-                        {activeThreats}
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-white">SYSTEM STATUS</span>
-                      <Badge variant="default" className="bg-green-900/50 text-green-400">
-                        {systemStatus.toUpperCase()}
-                      </Badge>
-                    </div>
-                    
-                    <div className="border-t border-green-400/30 pt-4">
-                      <div className="text-white mb-2 flex items-center gap-1 text-sm">
-                        <TrendingUp className="w-3 h-3" />
-                        RECENT DEVELOPMENTS:
+              {/* Recent Developments - Single Column */}
+              <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="text-green-400 font-mono flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    RECENT TACTICAL DEVELOPMENTS
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {recentDevelopments.map((dev, index) => (
+                      <div key={index} className="bg-black/40 border border-green-400/20 rounded p-3">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className={`${getSeverityColor(dev.severity)} font-mono text-sm font-bold`}>{dev.time}</span>
+                          <Badge 
+                            variant="outline" 
+                            className={`text-xs ${getSeverityColor(dev.severity)} border-current`}
+                          >
+                            {dev.severity.toUpperCase()}
+                          </Badge>
+                        </div>
+                        <div className="text-green-400/80 text-sm">{dev.event}</div>
                       </div>
-                      <div className="space-y-2 max-h-32 overflow-y-auto">
-                        {recentDevelopments.map((dev, index) => (
-                          <div key={index} className="text-xs border-l-2 border-green-400/30 pl-2 py-1">
-                            <div className="flex justify-between items-start">
-                              <span className={getSeverityColor(dev.severity)}>{dev.time}</span>
-                            </div>
-                            <div className="text-green-400/80 text-xs">{dev.event}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="threats" className="space-y-6">
