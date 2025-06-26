@@ -95,15 +95,44 @@ const getConflictColor = (severity: string) => {
 export const GlobalMap: React.FC = () => {
   const [selectedConflict, setSelectedConflict] = useState<typeof conflictZones[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [coordinates, setCoordinates] = useState({ lat: 0, lon: 0 });
 
   const handleConflictClick = (conflict: typeof conflictZones[0]) => {
     setSelectedConflict(conflict);
     setIsDialogOpen(true);
   };
 
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    
+    // Convert normalized coordinates to lat/lon
+    // World map projection: longitude -180 to 180, latitude 85 to -85 (Mercator-like)
+    const longitude = (x * 360) - 180;
+    const latitude = 85 - (y * 170);
+    
+    setCoordinates({
+      lat: Math.round(latitude * 100) / 100,
+      lon: Math.round(longitude * 100) / 100
+    });
+  };
+
+  const formatCoordinate = (value: number, isLat: boolean) => {
+    const abs = Math.abs(value);
+    const degrees = Math.floor(abs);
+    const minutes = Math.floor((abs - degrees) * 60);
+    const seconds = Math.floor(((abs - degrees) * 60 - minutes) * 60);
+    const direction = isLat ? (value >= 0 ? 'N' : 'S') : (value >= 0 ? 'E' : 'W');
+    return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toString().padStart(2, '0')}"${direction}`;
+  };
+
   return (
     <>
-      <div className="relative w-full aspect-[2/1] bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden">
+      <div 
+        className="relative w-full aspect-[2/1] bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden cursor-crosshair"
+        onMouseMove={handleMouseMove}
+      >
         {/* Base tactical world map image */}
         <img 
           src={tacticalWorldMap}
@@ -188,7 +217,7 @@ export const GlobalMap: React.FC = () => {
 
         {/* Coordinates display */}
         <div className="absolute top-3 right-3 text-xs text-amber-400 font-mono bg-black/80 px-2 py-1 border border-amber-500/50">
-          LAT: 0°00'00" LON: 0°00'00"
+          LAT: {formatCoordinate(coordinates.lat, true)} LON: {formatCoordinate(coordinates.lon, false)}
         </div>
         
         {/* Tactical Legend */}
