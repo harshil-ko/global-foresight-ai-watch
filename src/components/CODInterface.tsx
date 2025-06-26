@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { TacticalHUD } from './TacticalHUD';
 import { MilitaryButton } from './MilitaryButton';
@@ -138,26 +137,26 @@ const CODInterface: React.FC = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span>DEFCON LEVEL</span>
+                      <span className="text-white">DEFCON LEVEL</span>
                       <Badge variant="destructive" className="bg-red-900/50 text-red-400">
                         {threatLevel}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>ACTIVE THREATS</span>
+                      <span className="text-white">ACTIVE THREATS</span>
                       <Badge variant="secondary" className="bg-yellow-900/50 text-yellow-400">
                         {activeThreats}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>SYSTEM STATUS</span>
+                      <span className="text-white">SYSTEM STATUS</span>
                       <Badge variant="default" className="bg-green-900/50 text-green-400">
                         {systemStatus.toUpperCase()}
                       </Badge>
                     </div>
                     
                     <div className="border-t border-green-400/30 pt-4">
-                      <div className="text-green-400/70 mb-2 flex items-center gap-1 text-sm">
+                      <div className="text-white mb-2 flex items-center gap-1 text-sm">
                         <TrendingUp className="w-3 h-3" />
                         RECENT DEVELOPMENTS:
                       </div>
