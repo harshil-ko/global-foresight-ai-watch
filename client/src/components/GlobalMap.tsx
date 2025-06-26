@@ -130,7 +130,7 @@ export const GlobalMap: React.FC = () => {
   return (
     <>
       <div 
-        className="relative w-full h-[500px] bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden cursor-crosshair"
+        className="global-map-container relative w-full h-[500px] bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden cursor-crosshair"
         onMouseMove={handleMouseMove}
       >
         {/* Base tactical world map image */}

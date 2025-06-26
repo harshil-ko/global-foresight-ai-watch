@@ -41,7 +41,7 @@ export const TacticalHUD: React.FC<TacticalHUDProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50">
+    <div className="tactical-hud fixed inset-0 pointer-events-none z-50">
       {/* Corner brackets */}
       <div className="absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-green-400 opacity-60"></div>
       <div className="absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-green-400 opacity-60"></div>
