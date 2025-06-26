@@ -130,7 +130,7 @@ export const GlobalMap: React.FC = () => {
   return (
     <>
       <div 
-        className="relative w-full h-96 bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden cursor-crosshair"
+        className="relative w-full h-[500px] bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden cursor-crosshair"
         onMouseMove={handleMouseMove}
       >
         {/* Base tactical world map image */}
@@ -221,7 +221,7 @@ export const GlobalMap: React.FC = () => {
         </div>
         
         {/* Mini Radar Display */}
-        <div className="absolute bottom-3 left-3 w-24 h-24">
+        <div className="absolute bottom-16 left-3 w-24 h-24">
           <div className="relative w-full h-full bg-black/80 border border-green-400/50 rounded-full">
             {/* Radar Grid */}
             <div className="absolute inset-0 rounded-full overflow-hidden">
