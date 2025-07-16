@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { TacticalHUD } from './TacticalHUD';
 import { MilitaryButton } from './MilitaryButton';
-
+import { ThreatIndicator } from './ThreatIndicator';
 import { GlobalMap } from './GlobalMap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Satellite, Users, Globe, TrendingUp, AlertTriangle, Zap, Eye, Shield } from 'lucide-react';
+import { MapPin, Satellite, Users, Globe, TrendingUp } from 'lucide-react';
 
 const CODInterface: React.FC = () => {
   const [threatLevel, setThreatLevel] = useState(3);
@@ -45,6 +45,13 @@ const CODInterface: React.FC = () => {
     return Math.round((votes / total) * 100);
   };
 
+  const threatCards = [
+    { level: 'critical' as const, location: 'EASTERN EUROPE', type: 'CYBER ATTACK', confidence: 94 },
+    { level: 'high' as const, location: 'SOUTH CHINA SEA', type: 'NAVAL BUILDUP', confidence: 87 },
+    { level: 'medium' as const, location: 'MIDDLE EAST', type: 'INSURGENT ACTIVITY', confidence: 73 },
+    { level: 'low' as const, location: 'ARCTIC CIRCLE', type: 'SURVEILLANCE', confidence: 56 },
+  ];
+
   const recentDevelopments = [
     { time: '14:30', event: 'Eastern Europe: Cyber attack on infrastructure networks detected', severity: 'critical' },
     { time: '12:15', event: 'South China Sea: Increased naval patrols reported', severity: 'high' },
@@ -60,16 +67,6 @@ const CODInterface: React.FC = () => {
       case 'medium': return 'text-yellow-400';
       case 'low': return 'text-green-400';
       default: return 'text-gray-400';
-    }
-  };
-
-  const getSeverityIcon = (severity: string) => {
-    switch (severity) {
-      case 'critical': return <AlertTriangle className="w-4 h-4" />;
-      case 'high': return <Zap className="w-4 h-4" />;
-      case 'medium': return <Eye className="w-4 h-4" />;
-      case 'low': return <Shield className="w-4 h-4" />;
-      default: return <Shield className="w-4 h-4" />;
     }
   };
 
@@ -105,9 +102,12 @@ const CODInterface: React.FC = () => {
           </div>
 
           <Tabs defaultValue="tactical" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-black/50 border border-green-400/30">
+            <TabsList className="grid w-full grid-cols-4 bg-black/50 border border-green-400/30">
               <TabsTrigger value="tactical" className="data-[state=active]:bg-green-900/50 data-[state=active]:text-green-400">
                 TACTICAL OVERVIEW
+              </TabsTrigger>
+              <TabsTrigger value="threats" className="data-[state=active]:bg-green-900/50 data-[state=active]:text-green-400">
+                THREAT ANALYSIS
               </TabsTrigger>
               <TabsTrigger value="intel" className="data-[state=active]:bg-green-900/50 data-[state=active]:text-green-400">
                 INTELLIGENCE
@@ -118,7 +118,7 @@ const CODInterface: React.FC = () => {
             </TabsList>
 
             <TabsContent value="tactical" className="space-y-6">
-              {/* Global Map - Larger and Full Width */}
+              {/* Global Map - Full Width */}
               <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-green-400 font-mono flex items-center gap-2">
@@ -126,7 +126,7 @@ const CODInterface: React.FC = () => {
                     GLOBAL CONFLICT MAP
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent>
                   <GlobalMap />
                 </CardContent>
               </Card>
@@ -144,12 +144,7 @@ const CODInterface: React.FC = () => {
                     {recentDevelopments.map((dev, index) => (
                       <div key={index} className="bg-black/40 border border-green-400/20 rounded p-3">
                         <div className="flex justify-between items-start mb-2">
-                          <div className="flex items-center gap-2">
-                            <span className={getSeverityColor(dev.severity)}>
-                              {getSeverityIcon(dev.severity)}
-                            </span>
-                            <span className={`${getSeverityColor(dev.severity)} font-mono text-sm font-bold`}>{dev.time}</span>
-                          </div>
+                          <span className={`${getSeverityColor(dev.severity)} font-mono text-sm font-bold`}>{dev.time}</span>
                           <Badge 
                             variant="outline" 
                             className={`text-xs ${getSeverityColor(dev.severity)} border-current`}
@@ -163,6 +158,20 @@ const CODInterface: React.FC = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="threats" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {threatCards.map((threat, index) => (
+                  <ThreatIndicator
+                    key={index}
+                    level={threat.level}
+                    location={threat.location}
+                    type={threat.type}
+                    confidence={threat.confidence}
+                  />
+                ))}
+              </div>
             </TabsContent>
 
             <TabsContent value="intel" className="space-y-6">
