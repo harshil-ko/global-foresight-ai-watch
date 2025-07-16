@@ -119,7 +119,7 @@ const CODInterface: React.FC = () => {
 
             <TabsContent value="tactical" className="space-y-6">
               {/* Global Map - Larger and Full Width */}
-              <Card className="card-compact bg-black/60 border-green-400/30 backdrop-blur-sm">
+              <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-green-400 font-mono flex items-center gap-2">
                     <Globe className="w-5 h-5" />
@@ -132,7 +132,7 @@ const CODInterface: React.FC = () => {
               </Card>
 
               {/* Recent Developments - Single Column */}
-              <Card className="card-compact bg-black/60 border-green-400/30 backdrop-blur-sm">
+              <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-green-400 font-mono flex items-center gap-2">
                     <TrendingUp className="w-5 h-5" />
@@ -167,7 +167,7 @@ const CODInterface: React.FC = () => {
 
             <TabsContent value="intel" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="card-compact bg-black/60 border-green-400/30 backdrop-blur-sm">
+                <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="text-green-400 font-mono flex items-center gap-2">
                       <Satellite className="w-5 h-5" />
@@ -220,7 +220,7 @@ const CODInterface: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="card-compact bg-black/60 border-amber-400/30 backdrop-blur-sm">
+                <Card className="bg-black/60 border-amber-400/30 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="text-amber-400 font-mono flex items-center gap-2">
                       <Globe className="w-5 h-5" />
@@ -261,7 +261,7 @@ const CODInterface: React.FC = () => {
 
             <TabsContent value="polls" className="space-y-6">
               <div className="max-w-4xl mx-auto">
-                <Card className="card-compact bg-black/60 border-amber-400/30 backdrop-blur-sm">
+                <Card className="bg-black/60 border-amber-400/30 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="text-amber-400 font-mono flex items-center gap-2">
                       <Users className="w-5 h-5" />
