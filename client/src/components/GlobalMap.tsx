@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { ConflictDialog } from './ConflictDialog';
+import tacticalWorldMap from '../assets/tactical-world-map.png';
 
 const conflictZones = [
   {
@@ -94,187 +95,120 @@ const getConflictColor = (severity: string) => {
 export const GlobalMap: React.FC = () => {
   const [selectedConflict, setSelectedConflict] = useState<typeof conflictZones[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [coordinates, setCoordinates] = useState({ lat: 0, lon: 0 });
 
   const handleConflictClick = (conflict: typeof conflictZones[0]) => {
     setSelectedConflict(conflict);
     setIsDialogOpen(true);
   };
 
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    
+    // Convert normalized coordinates to lat/lon
+    // World map projection: longitude -180 to 180, latitude 85 to -85 (Mercator-like)
+    const longitude = (x * 360) - 180;
+    const latitude = 85 - (y * 170);
+    
+    setCoordinates({
+      lat: Math.round(latitude * 100) / 100,
+      lon: Math.round(longitude * 100) / 100
+    });
+  };
+
+  const formatCoordinate = (value: number, isLat: boolean) => {
+    const abs = Math.abs(value);
+    const degrees = Math.floor(abs);
+    const minutes = Math.floor((abs - degrees) * 60);
+    const seconds = Math.floor(((abs - degrees) * 60 - minutes) * 60);
+    const direction = isLat ? (value >= 0 ? 'N' : 'S') : (value >= 0 ? 'E' : 'W');
+    return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toString().padStart(2, '0')}"${direction}`;
+  };
+
   return (
     <>
-      <div className="relative w-full aspect-[2/1] bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden">
-        <svg 
-          className="absolute inset-0 w-full h-full" 
-          viewBox="0 0 1000 500" 
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {/* Grid Pattern Background */}
-          <defs>
-            <pattern id="tacticalGrid" width="25" height="25" patternUnits="userSpaceOnUse">
-              <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(251, 191, 36, 0.2)" strokeWidth="0.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#tacticalGrid)" />
+      <div 
+        className="global-map-container relative w-full h-[500px] bg-slate-900 border border-amber-500/30 rounded-lg overflow-hidden cursor-crosshair"
+        onMouseMove={handleMouseMove}
+      >
+        {/* Base tactical world map image */}
+        <img 
+          src={tacticalWorldMap}
+          alt="Tactical World Map"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        
+        {/* Overlay for conflict zones */}
+        <div className="absolute inset-0 w-full h-full">
+          {/* Ukraine - Critical (Eastern Europe) */}
+          <div 
+            className="absolute w-4 h-4 cursor-pointer"
+            style={{ left: '55%', top: '25%' }}
+            onClick={() => handleConflictClick(conflictZones[0])}
+          >
+            <div 
+              className="w-full h-full rounded-full animate-pulse opacity-90 hover:opacity-100"
+              style={{ 
+                backgroundColor: getConflictColor('critical'),
+                boxShadow: `0 0 15px ${getConflictColor('critical')}`,
+                border: `2px solid ${getConflictColor('critical')}`
+              }}
+            ></div>
+          </div>
 
-          {/* Detailed World Map Outlines */}
-          <g fill="none" stroke="rgba(251, 191, 36, 0.8)" strokeWidth="1.2">
-            
-            {/* North America - More detailed */}
-            {/* Canada */}
-            <path d="M60 40 L120 35 L180 40 L240 45 L280 50 L320 55 L340 70 L330 90 L300 100 L250 95 L200 90 L150 85 L100 80 L70 70 Z" />
-            {/* USA */}
-            <path d="M70 90 L320 95 L315 130 L310 150 L280 160 L240 155 L180 150 L120 145 L80 140 L75 120 Z" />
-            {/* Mexico */}
-            <path d="M100 160 L200 165 L180 190 L160 200 L140 195 L120 185 Z" />
-            
-            {/* South America */}
-            <path d="M200 210 L220 205 L240 220 L250 260 L255 300 L260 340 L250 380 L240 400 L220 410 L200 405 L185 390 L180 350 L175 310 L180 270 L190 230 Z" />
-            
-            {/* Europe - Detailed */}
-            {/* Scandinavia */}
-            <path d="M480 30 L500 25 L520 35 L525 60 L520 80 L500 85 L485 75 L480 50 Z" />
-            {/* UK */}
-            <path d="M430 70 L445 65 L450 80 L445 95 L430 100 L420 90 L425 75 Z" />
-            {/* Western Europe */}
-            <path d="M450 90 L480 85 L520 90 L540 110 L535 130 L520 135 L490 140 L460 135 L445 125 L450 105 Z" />
-            {/* Eastern Europe */}
-            <path d="M540 80 L580 75 L620 85 L640 100 L635 125 L620 135 L590 140 L560 135 L545 120 L540 100 Z" />
-            
-            {/* Russia - Large landmass */}
-            <path d="M620 50 L720 45 L820 50 L900 55 L950 65 L960 85 L955 110 L940 130 L900 135 L840 140 L780 135 L720 130 L680 125 L650 115 L630 95 L625 75 Z" />
-            
-            {/* Africa - Detailed */}
-            <path d="M460 180 L520 175 L570 185 L590 220 L595 260 L590 300 L580 340 L565 370 L545 390 L520 400 L490 395 L465 385 L450 360 L445 320 L450 280 L455 240 L460 200 Z" />
-            
-            {/* Middle East */}
-            <path d="M560 150 L620 145 L670 155 L680 180 L675 200 L650 210 L620 205 L590 195 L570 180 L565 165 Z" />
-            
-            {/* Asia - China, India, Southeast Asia */}
-            {/* China */}
-            <path d="M680 120 L760 115 L820 125 L840 150 L835 180 L820 200 L790 205 L750 200 L710 195 L685 175 L680 145 Z" />
-            {/* India */}
-            <path d="M650 200 L700 195 L720 220 L715 260 L700 285 L680 290 L660 280 L650 250 L655 225 Z" />
-            {/* Southeast Asia */}
-            <path d="M720 240 L780 235 L820 250 L840 275 L825 295 L800 300 L770 295 L745 285 L725 270 Z" />
-            
-            {/* Japan */}
-            <path d="M860 160 L880 155 L890 170 L885 185 L870 190 L860 180 Z" />
-            
-            {/* Australia */}
-            <path d="M780 350 L840 345 L880 355 L900 375 L895 395 L875 405 L840 410 L800 405 L775 390 L770 370 Z" />
-            
-            {/* Additional islands and details */}
-            {/* Madagascar */}
-            <path d="M590 320 L605 315 L610 340 L605 355 L590 360 L585 345 Z" />
-            {/* New Zealand */}
-            <path d="M920 400 L935 395 L940 415 L935 430 L920 435 L915 420 Z" />
+          {/* Middle East - High */}
+          <div 
+            className="absolute w-3 h-3 cursor-pointer"
+            style={{ left: '58%', top: '40%' }}
+            onClick={() => handleConflictClick(conflictZones[1])}
+          >
+            <div 
+              className="w-full h-full rounded-full animate-pulse opacity-90 hover:opacity-100"
+              style={{ 
+                backgroundColor: getConflictColor('high'),
+                boxShadow: `0 0 12px ${getConflictColor('high')}`,
+                border: `2px solid ${getConflictColor('high')}`
+              }}
+            ></div>
+          </div>
 
-          </g>
+          {/* South China Sea - Medium */}
+          <div 
+            className="absolute w-3 h-3 cursor-pointer"
+            style={{ left: '82%', top: '45%' }}
+            onClick={() => handleConflictClick(conflictZones[2])}
+          >
+            <div 
+              className="w-full h-full rounded-full animate-pulse opacity-90 hover:opacity-100"
+              style={{ 
+                backgroundColor: getConflictColor('medium'),
+                boxShadow: `0 0 10px ${getConflictColor('medium')}`,
+                border: `2px solid ${getConflictColor('medium')}`
+              }}
+            ></div>
+          </div>
 
-          {/* Conflict Zones with Tactical Highlighting */}
-          <g>
-            {/* Ukraine - Critical */}
-            <circle 
-              cx="580" 
-              cy="100" 
-              r="15"
-              fill={getConflictColor('critical')} 
-              stroke={getConflictColor('critical')} 
-              strokeWidth="3"
-              className="animate-pulse cursor-pointer opacity-90 hover:opacity-100"
-              onClick={() => handleConflictClick(conflictZones[0])}
-              style={{ filter: `drop-shadow(0 0 15px ${getConflictColor('critical')})` }}
-            />
-            
-            {/* Russia - Critical (Multiple zones) */}
-            <circle 
-              cx="750" 
-              cy="90" 
-              r="12"
-              fill={getConflictColor('critical')} 
-              stroke={getConflictColor('critical')} 
-              strokeWidth="3"
-              className="animate-pulse cursor-pointer opacity-90 hover:opacity-100"
-              onClick={() => handleConflictClick(conflictZones[0])}
-              style={{ filter: `drop-shadow(0 0 15px ${getConflictColor('critical')})` }}
-            />
-
-            {/* Middle East - High */}
-            <circle 
-              cx="620" 
-              cy="175" 
-              r="12"
-              fill={getConflictColor('high')} 
-              stroke={getConflictColor('high')} 
-              strokeWidth="3"
-              className="animate-pulse cursor-pointer opacity-90 hover:opacity-100"
-              onClick={() => handleConflictClick(conflictZones[1])}
-              style={{ filter: `drop-shadow(0 0 12px ${getConflictColor('high')})` }}
-            />
-
-            {/* South China Sea - Medium */}
-            <circle 
-              cx="790" 
-              cy="240" 
-              r="10"
-              fill={getConflictColor('medium')} 
-              stroke={getConflictColor('medium')} 
-              strokeWidth="2"
-              className="animate-pulse cursor-pointer opacity-90 hover:opacity-100"
-              onClick={() => handleConflictClick(conflictZones[2])}
-              style={{ filter: `drop-shadow(0 0 10px ${getConflictColor('medium')})` }}
-            />
-
-            {/* Africa Conflicts - Medium */}
-            <circle 
-              cx="520" 
-              cy="280" 
-              r="10"
-              fill={getConflictColor('medium')} 
-              stroke={getConflictColor('medium')} 
-              strokeWidth="2"
-              className="animate-pulse cursor-pointer opacity-90 hover:opacity-100"
-              onClick={() => handleConflictClick(conflictZones[3])}
-              style={{ filter: `drop-shadow(0 0 10px ${getConflictColor('medium')})` }}
-            />
-          </g>
-
-          {/* Tactical Scanning Lines */}
-          <defs>
-            <linearGradient id="amberscanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="rgba(251, 191, 36, 0)" />
-              <stop offset="50%" stopColor="rgba(251, 191, 36, 0.4)" />
-              <stop offset="100%" stopColor="rgba(251, 191, 36, 0)" />
-            </linearGradient>
-          </defs>
-          
-          <rect 
-            width="100%" 
-            height="2" 
-            y="125" 
-            fill="url(#amberscanGradient)" 
-            className="animate-pulse"
-          />
-          <rect 
-            width="100%" 
-            height="2" 
-            y="250" 
-            fill="url(#amberscanGradient)" 
-            className="animate-pulse"
-            style={{ animationDelay: '1.5s' }}
-          />
-          <rect 
-            width="100%" 
-            height="2" 
-            y="375" 
-            fill="url(#amberscanGradient)" 
-            className="animate-pulse"
-            style={{ animationDelay: '3s' }}
-          />
-        </svg>
+          {/* Africa Conflicts - Medium */}
+          <div 
+            className="absolute w-3 h-3 cursor-pointer"
+            style={{ left: '52%', top: '60%' }}
+            onClick={() => handleConflictClick(conflictZones[3])}
+          >
+            <div 
+              className="w-full h-full rounded-full animate-pulse opacity-90 hover:opacity-100"
+              style={{ 
+                backgroundColor: getConflictColor('medium'),
+                boxShadow: `0 0 10px ${getConflictColor('medium')}`,
+                border: `2px solid ${getConflictColor('medium')}`
+              }}
+            ></div>
+          </div>
+        </div>
         
         {/* Tactical HUD Status overlay */}
-        <div className="absolute top-3 left-3 text-xs text-amber-400 font-mono bg-black/60 px-2 py-1 border border-amber-500/30">
+        <div className="absolute top-3 left-3 text-xs text-amber-400 font-mono bg-black/80 px-2 py-1 border border-amber-500/50">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
             GLOBAL CONFLICT MONITOR - ACTIVE
@@ -282,12 +216,43 @@ export const GlobalMap: React.FC = () => {
         </div>
 
         {/* Coordinates display */}
-        <div className="absolute top-3 right-3 text-xs text-amber-400 font-mono bg-black/60 px-2 py-1 border border-amber-500/30">
-          LAT: 0°00'00" LON: 0°00'00"
+        <div className="absolute top-3 right-3 text-xs text-amber-400 font-mono bg-black/80 px-2 py-1 border border-amber-500/50">
+          LAT: {formatCoordinate(coordinates.lat, true)} LON: {formatCoordinate(coordinates.lon, false)}
         </div>
         
+        {/* Mini Radar Display */}
+        <div className="absolute bottom-16 left-3 w-24 h-24">
+          <div className="relative w-full h-full bg-black/80 border border-green-400/50 rounded-full">
+            {/* Radar Grid */}
+            <div className="absolute inset-0 rounded-full overflow-hidden">
+              {/* Concentric circles */}
+              <div className="absolute inset-2 border border-green-400/30 rounded-full"></div>
+              <div className="absolute inset-4 border border-green-400/20 rounded-full"></div>
+              
+              {/* Cross lines */}
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-green-400/30 transform -translate-y-px"></div>
+              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-green-400/30 transform -translate-x-px"></div>
+              
+              {/* Rotating sweep line */}
+              <div className="absolute top-1/2 left-1/2 w-px h-1/2 bg-gradient-to-t from-green-400 to-transparent transform-gpu origin-bottom animate-spin">
+                <div className="absolute top-0 left-1/2 w-1 h-1 bg-green-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+              
+              {/* Threat blips */}
+              <div className="absolute top-1/3 left-2/3 w-1 h-1 bg-red-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-2/3 left-1/3 w-1 h-1 bg-yellow-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-orange-400 rounded-full animate-pulse"></div>
+            </div>
+            
+            {/* Radar Label */}
+            <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-green-400 font-mono">
+              RADAR
+            </div>
+          </div>
+        </div>
+
         {/* Tactical Legend */}
-        <div className="absolute bottom-3 right-3 text-xs text-amber-400 font-mono bg-black/60 px-3 py-2 border border-amber-500/30 space-y-1">
+        <div className="absolute bottom-3 right-3 text-xs text-amber-400 font-mono bg-black/80 px-3 py-2 border border-amber-500/50 space-y-1">
           <div className="text-amber-300 font-bold mb-1">THREAT LEVELS</div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse border border-red-300"></div>
@@ -304,10 +269,10 @@ export const GlobalMap: React.FC = () => {
         </div>
 
         {/* Corner brackets for tactical HUD feel */}
-        <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-amber-500/50"></div>
-        <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-amber-500/50"></div>
-        <div className="absolute bottom-0 left-0 w-8 h-8 border-l-2 border-b-2 border-amber-500/50"></div>
-        <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-amber-500/50"></div>
+        <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-amber-500/60"></div>
+        <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-amber-500/60"></div>
+        <div className="absolute bottom-0 left-0 w-8 h-8 border-l-2 border-b-2 border-amber-500/60"></div>
+        <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-amber-500/60"></div>
       </div>
 
       <ConflictDialog

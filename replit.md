@@ -21,10 +21,10 @@ This is a full-stack web application featuring a military-style Command Operatio
 - **Development**: Hot reloading with Vite middleware integration
 
 ### Data Storage
-- **Primary Database**: PostgreSQL with Drizzle ORM
+- **Primary Database**: PostgreSQL with Drizzle ORM (Active)
 - **Schema Management**: Drizzle Kit for migrations and schema management
-- **Temporary Storage**: In-memory storage implementation for development
-- **Database Provider**: Neon Database (serverless PostgreSQL)
+- **Database Storage**: DatabaseStorage class replacing in-memory storage
+- **Database Provider**: Replit PostgreSQL instance
 
 ## Key Components
 
@@ -88,7 +88,8 @@ This is a full-stack web application featuring a military-style Command Operatio
 
 ## Changelog
 
-- June 26, 2025. Initial setup
+- June 26, 2025: Initial setup
+- June 26, 2025: Added PostgreSQL database integration with DatabaseStorage class
 
 ## User Preferences
 
